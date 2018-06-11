@@ -17,6 +17,11 @@ package com.example.android.roomwordssample;
  */
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,9 +43,13 @@ public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordVi
     }
 
     private final LayoutInflater mInflater;
+    private final Resources mResources;
     private List<Word> mWords; // Cached copy of words
 
-    WordListAdapter(Context context) { mInflater = LayoutInflater.from(context); }
+    WordListAdapter(Context context) {
+        mInflater = LayoutInflater.from(context);
+        mResources = context.getResources();
+    }
 
     @Override
     public WordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -51,10 +60,14 @@ public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordVi
     @Override
     public void onBindViewHolder(WordViewHolder holder, int position) {
         Word current = mWords.get(position);
-        holder.wordItemView.setText(current.getWord());
+        holder.wordItemView.setText(current.getLabel());
+        Bitmap icon = BitmapFactory.decodeByteArray(current.getIcon(), 0, current.getIcon().length);
+        Drawable drawable = new BitmapDrawable(mResources, icon);
+        drawable.setBounds(0,0,144,144);
+        holder.wordItemView.setCompoundDrawables(null, drawable, null, null);
     }
 
-    void setWords(List<Word> words){
+    void setWords(List<Word> words) {
         mWords = words;
         notifyDataSetChanged();
     }
